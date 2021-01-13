@@ -5,7 +5,8 @@ archive=$1
 url=$2
 
 if [ ! -f $archive.tar.gz ]; then
-    wget -O $archive.tar.gz $url
+    # wget -O $archive.tar.gz $url
+    curl -Lo $archive.tar.gz ${url}
 fi
 
 rm -r $archive
