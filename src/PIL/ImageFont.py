@@ -45,7 +45,7 @@ class _imagingft_not_installed:
 
 
 try:
-    from . import _imagingft as core
+    import _imagingft as core
 except ImportError:
     core = _imagingft_not_installed()
 

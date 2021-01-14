@@ -3,7 +3,7 @@ from io import BytesIO
 from . import Image, ImageFile
 
 try:
-    from . import _webp
+    import _webp
 
     SUPPORTED = True
 except ImportError:

@@ -177,7 +177,7 @@ class PhotoImage:
         except tkinter.TclError:
             # activate Tkinter hook
             try:
-                from . import _imagingtk
+                import _imagingtk
 
                 try:
                     if hasattr(tk, "interp"):

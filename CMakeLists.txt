@@ -73,19 +73,19 @@ set(INCLUDES
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libimagequant"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libraqm"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libraqm/src"
-	"${CMAKE_CURRENT_SOURCE_DIR}/depends/zlib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/depends/zlib"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libjpeg"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libpng"
-	"${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp"
+    	"${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp/src"
-    "${CMAKE_CURRENT_SOURCE_DIR}/depends/tiff/libtiff"
+    "${CMAKE_CURRENT_SOURCE_DIR}/depends/libtiff"
     "${PYTHON_INCLUDE_DIRS}"
 )
 
 add_library(${TARGET_NAME} STATIC ${SRC})
 
 target_include_directories(${TARGET_NAME} PRIVATE ${INCLUDES})
-target_compile_definitions(${TARGET_NAME} PUBLIC -DPILLOW_VERSION="8.2.0.dev0")
+target_compile_definitions(${TARGET_NAME} PUBLIC -DPILLOW_VERSION="8.2.0.dev0" -DHAVE_LIBJPEG=1 -DHAVE_LIBZ=1 -DHAVE_LIBTIFF=1)
 
 set(SKIP_INSTALL_ALL TRUE)
 add_subdirectory(depends/freetype)

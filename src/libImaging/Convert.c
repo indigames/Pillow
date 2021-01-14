@@ -34,6 +34,10 @@
 
 #include "Imaging.h"
 
+/// [IGE]: for 'round' and math
+#include <math.h>
+/// [!IGE]
+
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define MIN(a, b) (a) < (b) ? (a) : (b)
 
@@ -43,12 +47,14 @@
 #define L(rgb) ((INT32)(rgb)[0] * 299 + (INT32)(rgb)[1] * 587 + (INT32)(rgb)[2] * 114)
 #define L24(rgb) ((rgb)[0] * 19595 + (rgb)[1] * 38470 + (rgb)[2] * 7471 + 0x8000)
 
-#ifndef round
-double
-round(double x) {
-    return floor(x + 0.5);
-}
-#endif
+/// [IGE]: round was defined in 'math.h'
+// #ifndef round
+// double
+// round(double x) {
+    // return floor(x + 0.5);
+// }
+// #endif
+/// [!IGE]
 
 /* ------------------- */
 /* 1 (bit) conversions */

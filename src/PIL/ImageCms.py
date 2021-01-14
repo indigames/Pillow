@@ -20,7 +20,7 @@ import sys
 from PIL import Image
 
 try:
-    from PIL import _imagingcms
+    import _imagingcms
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
     # anything in core.

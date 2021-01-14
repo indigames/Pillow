@@ -21,15 +21,17 @@
 
 #endif
 
+/// [IGE] Avoid link error 
 void
-ImagingSectionEnter(ImagingSectionCookie *cookie) {
+WebP_ImagingSectionEnter(ImagingSectionCookie *cookie) {
     *cookie = (PyThreadState *)PyEval_SaveThread();
 }
 
 void
-ImagingSectionLeave(ImagingSectionCookie *cookie) {
+WebP_ImagingSectionLeave(ImagingSectionCookie *cookie) {
     PyEval_RestoreThread((PyThreadState *)*cookie);
 }
+/// [!IGE]
 
 /* -------------------------------------------------------------------- */
 /* WebP Muxer Error Handling                                            */
@@ -657,10 +659,12 @@ WebPEncode_wrapper(PyObject *self, PyObject *args) {
     pic.writer = WebPMemoryWrite;
     pic.custom_ptr = &writer;
 
-    ImagingSectionEnter(&cookie);
+	/// [IGE] Avoid link error 
+    WebP_ImagingSectionEnter(&cookie);
     ok = WebPEncode(&config, &pic);
-    ImagingSectionLeave(&cookie);
-
+    WebP_ImagingSectionLeave(&cookie);
+	/// [!IGE]
+	
     WebPPictureFree(&pic);
     if (!ok) {
         PyErr_SetString(PyExc_ValueError, "encoding error");

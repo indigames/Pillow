@@ -17,7 +17,8 @@
 
 import builtins
 
-from . import Image, _imagingmath
+from . import Image
+import _imagingmath
 
 VERBOSE = 0
 

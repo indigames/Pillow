@@ -7,7 +7,8 @@
 
 import re
 
-from . import Image, _imagingmorph
+from . import Image
+import _imagingmorph
 
 LUT_SIZE = 1 << 9
 

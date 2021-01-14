@@ -8,11 +8,11 @@ import PIL
 from . import Image
 
 modules = {
-    "pil": ("PIL._imaging", "PILLOW_VERSION"),
-    "tkinter": ("PIL._tkinter_finder", None),
-    "freetype2": ("PIL._imagingft", "freetype2_version"),
-    "littlecms2": ("PIL._imagingcms", "littlecms_version"),
-    "webp": ("PIL._webp", "webpdecoder_version"),
+    "pil": ("_imaging", "PILLOW_VERSION"),
+    "tkinter": ("_tkinter_finder", None),
+    "freetype2": ("_imagingft", "freetype2_version"),
+    "littlecms2": ("_imagingcms", "littlecms_version"),
+    "webp": ("_webp", "webpdecoder_version"),
 }
 
 
@@ -114,13 +114,13 @@ def get_supported_codecs():
 
 
 features = {
-    "webp_anim": ("PIL._webp", "HAVE_WEBPANIM", None),
-    "webp_mux": ("PIL._webp", "HAVE_WEBPMUX", None),
-    "transp_webp": ("PIL._webp", "HAVE_TRANSPARENCY", None),
-    "raqm": ("PIL._imagingft", "HAVE_RAQM", "raqm_version"),
-    "libjpeg_turbo": ("PIL._imaging", "HAVE_LIBJPEGTURBO", "libjpeg_turbo_version"),
-    "libimagequant": ("PIL._imaging", "HAVE_LIBIMAGEQUANT", "imagequant_version"),
-    "xcb": ("PIL._imaging", "HAVE_XCB", None),
+    "webp_anim": ("_webp", "HAVE_WEBPANIM", None),
+    "webp_mux": ("_webp", "HAVE_WEBPMUX", None),
+    "transp_webp": ("_webp", "HAVE_TRANSPARENCY", None),
+    "raqm": ("_imagingft", "HAVE_RAQM", "raqm_version"),
+    "libjpeg_turbo": ("_imaging", "HAVE_LIBJPEGTURBO", "libjpeg_turbo_version"),
+    "libimagequant": ("_imaging", "HAVE_LIBIMAGEQUANT", "imagequant_version"),
+    "xcb": ("_imaging", "HAVE_XCB", None),
 }
 
 
