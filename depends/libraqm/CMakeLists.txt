@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.4.1)
 
 project(libraqm)
 
-
-find_library(fribidi NAMES fribidi)
-find_library(harfbuzz NAMES harfbuzz)
-find_library(freetype NAMES freetype)
+# find_library(fribidi NAMES fribidi)
+# find_library(harfbuzz NAMES harfbuzz)
+# find_library(freetype NAMES freetype)
 
 add_definitions(-DFRIBIDI_LIB_STATIC)
 
@@ -23,17 +22,30 @@ endfunction()
 raqm_conf()
 
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+# set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(RAQM_SOURCES
 	src/raqm.c)
+
 set(RAQM_HEADERS
 	src/raqm.h
 	src/raqm-version.h)
 
-add_library(libraqm SHARED
+add_library(libraqm STATIC
 	${RAQM_SOURCES}
 	${RAQM_HEADERS})
-target_link_libraries(libraqm
-	${fribidi}
-	${harfbuzz}
-	${freetype})
+
+# target_link_libraries(libraqm
+	# ${fribidi}
+	# ${harfbuzz}
+	# ${freetype})
+
+target_include_directories(libraqm PRIVATE 
+	"${CMAKE_CURRENT_SOURCE_DIR}/src"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../fribidi"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../fribidi/lib"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../harfbuzz"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../harfbuzz/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../harfbuzz/util"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../freetype"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../freetype/include"
+)
