@@ -11,11 +11,11 @@ echo Fetching %LIB_NAME% headers...
 if exist "%OUTPUT_HEADER%\include" (
 	rmdir /s /q %OUTPUT_HEADER%\include
 )
-if not exist "%OUTPUT_HEADER%\include\tensorflow" (
-    mkdir %OUTPUT_HEADER%\include\tensorflow
+if not exist "%OUTPUT_HEADER%\include" (
+    mkdir %OUTPUT_HEADER%\include
 )
 
-xcopy /q /s /y %PROJECT_DIR%\*.h?? %OUTPUT_HEADER%\include\tensorflow
+xcopy /q /s /y %PROJECT_DIR%\*.h?? %OUTPUT_HEADER%\include
 
 cd %CALL_DIR%
 echo Fetching %LIB_NAME% headers DONE!
