@@ -55,40 +55,41 @@ macro(fribidi_definitions _TGT)
 		HAVE_STRINGIZE=1)
 endmacro()
 
-function(fribidi_gen _NAME _OUTNAME _PARAM)
-	set(_OUT lib/${_OUTNAME})
-	prepend(_DEP "${CMAKE_CURRENT_SOURCE_DIR}/gen.tab/" ${ARGN})
-	add_executable(gen-${_NAME}
-		gen.tab/gen-${_NAME}.c
-		gen.tab/packtab.c)
-	fribidi_definitions(gen-${_NAME})
-	target_compile_definitions(gen-${_NAME}
-		PUBLIC DONT_HAVE_FRIBIDI_CONFIG_H)
-	add_custom_command(
-		COMMAND gen-${_NAME} ${_PARAM} ${_DEP} > ${_OUT}
-		DEPENDS ${_DEP}
-		OUTPUT ${_OUT})
-	list(APPEND FRIBIDI_SOURCES_GENERATED "${_OUT}")
-	set(FRIBIDI_SOURCES_GENERATED ${FRIBIDI_SOURCES_GENERATED} PARENT_SCOPE)
-endfunction()
+if(MSVC) # Gen on PC only
+	function(fribidi_gen _NAME _OUTNAME _PARAM)
+		set(_OUT lib/${_OUTNAME})
+		prepend(_DEP "${CMAKE_CURRENT_SOURCE_DIR}/gen.tab/" ${ARGN})
+		add_executable(gen-${_NAME}
+			gen.tab/gen-${_NAME}.c
+			gen.tab/packtab.c)
+		fribidi_definitions(gen-${_NAME})
+		target_compile_definitions(gen-${_NAME}
+			PUBLIC DONT_HAVE_FRIBIDI_CONFIG_H)
+		add_custom_command(
+			COMMAND gen-${_NAME} ${_PARAM} ${_DEP} > ${_OUT}
+			DEPENDS ${_DEP}
+			OUTPUT ${_OUT})
+		list(APPEND FRIBIDI_SOURCES_GENERATED "${_OUT}")
+		set(FRIBIDI_SOURCES_GENERATED ${FRIBIDI_SOURCES_GENERATED} PARENT_SCOPE)
+	endfunction()
 
-fribidi_gen(unicode-version fribidi-unicode-version.h ""
-	unidata/ReadMe.txt unidata/BidiMirroring.txt)
+	fribidi_gen(unicode-version fribidi-unicode-version.h ""
+		unidata/ReadMe.txt unidata/BidiMirroring.txt)
 
 
-macro(fribidi_tab _NAME)
-	fribidi_gen(${_NAME}-tab ${_NAME}.tab.i 2 ${ARGN})
-	target_sources(gen-${_NAME}-tab
-		PRIVATE lib/fribidi-unicode-version.h)
-endmacro()
+	macro(fribidi_tab _NAME)
+		fribidi_gen(${_NAME}-tab ${_NAME}.tab.i 2 ${ARGN})
+		target_sources(gen-${_NAME}-tab
+			PRIVATE lib/fribidi-unicode-version.h)
+	endmacro()
 
-fribidi_tab(bidi-type unidata/UnicodeData.txt)
-fribidi_tab(joining-type unidata/UnicodeData.txt unidata/ArabicShaping.txt)
-fribidi_tab(arabic-shaping unidata/UnicodeData.txt)
-fribidi_tab(mirroring unidata/BidiMirroring.txt)
-fribidi_tab(brackets unidata/BidiBrackets.txt unidata/UnicodeData.txt)
-fribidi_tab(brackets-type unidata/BidiBrackets.txt)
-
+	fribidi_tab(bidi-type unidata/UnicodeData.txt)
+	fribidi_tab(joining-type unidata/UnicodeData.txt unidata/ArabicShaping.txt)
+	fribidi_tab(arabic-shaping unidata/UnicodeData.txt)
+	fribidi_tab(mirroring unidata/BidiMirroring.txt)
+	fribidi_tab(brackets unidata/BidiBrackets.txt unidata/UnicodeData.txt)
+	fribidi_tab(brackets-type unidata/BidiBrackets.txt)
+endif()
 
 file(GLOB FRIBIDI_SOURCES lib/*.c)
 file(GLOB FRIBIDI_HEADERS lib/*.h)

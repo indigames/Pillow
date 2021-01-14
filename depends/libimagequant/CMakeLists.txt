@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 project(imagequant C)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(BUILD_WITH_SSE "Use SSE" ON)
+option(BUILD_WITH_SSE "Use SSE" MSVC) # Only with MSVC
 
 if(BUILD_WITH_SSE)
   add_definitions(-DUSE_SSE=1)
