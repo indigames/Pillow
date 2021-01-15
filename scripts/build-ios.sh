@@ -10,7 +10,7 @@ then
     echo "WORKSPACE is unset"; # which mean we run on local machine, not Jenkins
     SCRIPT_PATH=$(greadlink -f "$0"); # installed with 'brew install coreutils'
     SCRIPT_DIR=$(dirname "$SCRIPT_PATH");
-    export WORKSPACE=$SCRIPT_DIR/..;
+    export WORKSPACE=$SCRIPT_DIR;
 fi
 
 export PROJECT_DIR=$WORKSPACE/..
@@ -20,7 +20,7 @@ export PATH="$PATH:/usr/local/bin"
 # IGE_LIBS evironment variable, eg. 'echo export IGE_LIBS=/Volumes/Projects/igeEngine/igeLibs > ~/.bash_profile'
 # export IGE_LIBS=$PROJECT_DIR/../igeLibs
 
-export BUILD_DIR=$PROJECT_DIR/../build/ios
+export BUILD_DIR=$PROJECT_DIR/build/ios
 export OUTPUT_DIR=$IGE_LIBS/$LIB_NAME/libs/ios
 export CMAKE_TOOLCHAIN_FILE=$IGE_LIBS/cmake/ios.toolchain.cmake
 
@@ -35,6 +35,11 @@ fi
 
 [ ! -d "$OUTPUT_DIR/arm64" ] && mkdir -p $OUTPUT_DIR/arm64
 cp -R -f -p ./Release-iphoneos/*.a $OUTPUT_DIR/arm64
+cp -R -f -p ./depends/freetype/Release-iphoneos/*.a $OUTPUT_DIR/arm64
+cp -R -f -p ./depends/fribidi/Release-iphoneos/*.a $OUTPUT_DIR/arm64
+cp -R -f -p ./depends/lcms2/Release-iphoneos/*.a $OUTPUT_DIR/arm64
+cp -R -f -p ./depends/libimagequant/Release-iphoneos/*.a $OUTPUT_DIR/arm64
+cp -R -f -p ./depends/libraqm/Release-iphoneos/*.a $OUTPUT_DIR/arm64
 cp -R -f -p ./Release-iphoneos/*.so $OUTPUT_DIR/arm64
 
 echo DONE!
