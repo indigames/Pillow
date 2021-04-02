@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-file(TO_CMAKE_PATH $ENV{IGE_LIBS} IGE_LIBS)
-
 set(TARGET_NAME pillow-static)
 
 project(${TARGET_NAME})
 
 set (CMAKE_CXX_STANDARD 17)
 
+# [IGE]: tweaks for platforms
 if(DEFINED ANDROID_PLATFORM)
     set (ANDROID 1)
     if(ANDROID_ABI STREQUAL "armeabi-v7a")
@@ -31,25 +30,18 @@ elseif(IOS)
         add_compile_options(-g0 -Ofast)
     endif()
 endif()
+# [/IGE]
 
-set(PYTHON_INCLUDE_DIRS "${IGE_LIBS}/Python/Include")
-if (MSVC)
-	list(APPEND PYTHON_INCLUDE_DIRS "${IGE_LIBS}/Python/PC")	
-elseif (OSX)
-	list(APPEND PYTHON_INCLUDE_DIRS "${IGE_LIBS}/Python/Mac")
-elseif (ANDROID)
-	list(APPEND PYTHON_INCLUDE_DIRS "${IGE_LIBS}/Python/Android")
-elseif (IOS)
-	list(APPEND PYTHON_INCLUDE_DIRS "${IGE_LIBS}/Python/IOS")
-endif ()
+# [IGE]: try include conan build config
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+# [/IGE]
 
-# if(MSVC)
-	set(ZLIB_INCLUDE_DIR "${IGE_LIBS}/zlib/include")
-	set(ZLIB_LIBRARY "${IGE_LIBS}/zlib/libs/pc/x64/zlib.lib")
-# endif()
+set(PYTHON_INCLUDE_DIRS "${CONAN_INCLUDE_DIRS}")
 
-set(PNG_PNG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/depends/libpng")
-set(PNG_LIBRARY "${IGE_LIBS}/OpenCV/libs/pc/x64/libpng.lib")
+set(PNG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/depends/libpng")
 set(HARFBUZZ_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/depends/harfbuzz")
 set(HARFBUZZ_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/depends/harfbuzz")
 
