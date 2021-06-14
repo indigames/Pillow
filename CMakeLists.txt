@@ -1,12 +1,17 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.15.0)
 
 set(TARGET_NAME pillow-static)
 
 project(${TARGET_NAME})
 
-set (CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-# [IGE]: tweaks for platforms
+# Modules and install path (required by conan)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_MODULE_PATH})
+set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_PREFIX_PATH})
+
 if(DEFINED ANDROID_PLATFORM)
     set (ANDROID 1)
     if(ANDROID_ABI STREQUAL "armeabi-v7a")
@@ -24,22 +29,34 @@ if(DEFINED ANDROID_PLATFORM)
         add_compile_options(-Og)
     endif()
 elseif(MSVC)
-    add_compile_options(/MP)
+    if(${APP_STYLE} MATCHES "SHARED")
+        set(CMAKE_CXX_FLAGS "/MD ${CMAKE_CXX_FLAGS}")
+        set(CMAKE_CXX_FLAGS_RELEASE "/MD /O2 /Ob2 /Zc:inline")
+        set(CMAKE_CXX_FLAGS_DEBUG "/MD /JMC /ZI /Od")
+    endif()
+    add_compile_options(/MP /std:c++17)
 elseif(IOS)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         add_compile_options(-g0 -Ofast)
     endif()
 endif()
-# [/IGE]
 
-# [IGE]: try include conan build config
-if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+if(${APP_STYLE} MATCHES "SHARED")
+    find_package (Python3 ${PYTHON_VERSION} EXACT REQUIRED COMPONENTS Development)
+else()
+    find_package(Python REQUIRED)
+    set (Python3_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
+    set (Python3_LIBRARIES ${Python_LIBRARIES})
 endif()
-# [/IGE]
 
-set(PYTHON_INCLUDE_DIRS "${CONAN_INCLUDE_DIRS}")
+if(MSVC)
+    find_package(zlib REQUIRED)
+    set(ZLIB_FOUND ${zlib_FOUND})
+    set(ZLIB_LIBRARIES ${zlib_LIBRARIES})
+    set(ZLIB_INCLUDE_DIRS ${zlib_INCLUDE_DIRS})
+endif()
+
+set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
 
 set(PNG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/depends/libpng")
 set(HARFBUZZ_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/depends/harfbuzz")
@@ -68,10 +85,11 @@ set(INCLUDES
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/zlib"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libjpeg"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libpng"
-    	"${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libwebp/src"
     "${CMAKE_CURRENT_SOURCE_DIR}/depends/libtiff"
     "${PYTHON_INCLUDE_DIRS}"
+    "${zlib_INCLUDE_DIRS}"
 )
 
 add_library(${TARGET_NAME} STATIC ${SRC})
@@ -90,3 +108,21 @@ add_subdirectory(depends/libraqm)
 # add_subdirectory(depends/zlib)
 # add_subdirectory(depends/libjpeg-turbo)
 # add_subdirectory(depends/libpng)
+
+
+# Install Targets
+install(TARGETS
+    ${TARGET_NAME}
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION include
+)
+
+file(GLOB_RECURSE PUBLIC_INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h*")
+foreach(HEADER ${PUBLIC_INCLUDE_FILES})
+    file(RELATIVE_PATH HEADER_RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/" "${HEADER}")
+    get_filename_component(DIR ${HEADER_RELATIVE} DIRECTORY)
+    install(FILES ${HEADER} DESTINATION include/${DIR})
+endforeach()
+
