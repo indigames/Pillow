@@ -10,7 +10,7 @@ class IgeConan(ConanFile):
     url = "https://github.com/indigames"
     description = name + " library for IGE Engine"
     topics = ("#Python", "#IGE", "#Games")
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "os", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
     generators = "cmake_find_package"
@@ -20,7 +20,7 @@ class IgeConan(ConanFile):
     revision_mode="scm"
 
     def requirements(self):
-        self.requires("Python/3.9.1@ige/test")
+        self.requires("Python/[>=3.9.1]@ige/test")
 
     def build(self):
         self._generateCMakeProject()
